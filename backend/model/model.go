@@ -5,3 +5,8 @@ type CropInfo struct {
 	Area  string `json:"area"`
 	Count string `json:"count"`
 }
+
+type CropCount struct {
+	Name  string `json:"name"`
+	Count string `json:"count"`
+}

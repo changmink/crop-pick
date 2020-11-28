@@ -15,8 +15,8 @@ func main() {
 	api := engine.Group("/api")
 	v1 := api.Group("/v1")
 	{
-		v1.GET("/search", router.Search)
-		v1.GET("/ranking", router.Ranking)
+		v1.GET("/search", router.SearchCrop)
+		v1.GET("/ranking", router.RankingCrop)
 	}
 
 	engine.Run(":8080")

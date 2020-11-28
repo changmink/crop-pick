@@ -5,12 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Search(ctx *gin.Context) {
+func SearchCrop(ctx *gin.Context) {
 	name := ctx.Query("name")
-	info := db.FindInfo(name)
-	ctx.JSON(200, gin.H{"data": info})
+	info := db.FindCropInfo(name)
+	ctx.JSON(200, gin.H{"result": info})
 }
 
-func Ranking(ctx *gin.Context) {
-
+func RankingCrop(ctx *gin.Context) {
+	count := db.GetCropCount()
+	ctx.JSON(200, gin.H{"result": count})
 }
