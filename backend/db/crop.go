@@ -2,17 +2,22 @@ package db
 
 import (
 	"../model"
-	"../util"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func FindCropInfo(crop string) []model.CropInfo {
+func FindCropInfo(crop string) ([]model.CropInfo, error) {
 	db := getConnection()
 	defer db.Close()
 
 	rows, err := db.Query("SELECT name, area, SUM(amount) from crop_amount_area GROUP BY area having name=?", crop)
-	searchCount(crop)
-	util.CheckError(err)
+	if err != nil {
+		return nil, err
+	}
+
+	err = searchCount(crop)
+	if err != nil {
+		return nil, err
+	}
 
 	defer rows.Close()
 
@@ -20,49 +25,64 @@ func FindCropInfo(crop string) []model.CropInfo {
 	infoList := make([]model.CropInfo, 0)
 	for rows.Next() {
 		err := rows.Scan(&info.Name, &info.Area, &info.Count)
-		util.CheckError(err)
+		if err != nil {
+			return nil, err
+		}
 		infoList = append(infoList, info)
 	}
 
-	return infoList
+	return infoList, nil
 }
 
-func searchCount(crop string) {
+func searchCount(crop string) error {
 	db := getConnection()
 	defer db.Close()
 
 	rows, err := db.Query("SELECT count FROM crop_count WHERE name=?", crop)
-	util.CheckError(err)
+	if err != nil {
+		return err
+	}
 	defer rows.Close()
 
 	var count int
-	for rows.Next() {
+	if rows.Next() {
 		err := rows.Scan(&count)
-		util.CheckError(err)
+		if err != nil {
+			return err
+		}
 
 		_, err = db.Query("UPDATE crop_count SET count=? WHERE name=?", count+1, crop)
-		util.CheckError(err)
-		return
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err = db.Query("INSERT INTO crop_count VALUES(?, 1)", crop)
+		if err != nil {
+			return err
+		}
 	}
 
-	_, err = db.Query("INSERT INTO crop_count VALUES(?, 1)", crop)
-	util.CheckError(err)
+	return nil
 }
 
-func GetCropCount() []model.CropCount {
+func GetCropCount() ([]model.CropCount, error) {
 	db := getConnection()
 	defer db.Close()
 
 	rows, err := db.Query("SELECT * FROM crop_count")
-	util.CheckError(err)
+	if err != nil {
+		return nil, err
+	}
 
 	countList := make([]model.CropCount, 0)
 	var count model.CropCount
 	for rows.Next() {
 		err := rows.Scan(&count.Name, &count.Count)
-		util.CheckError(err)
+		if err != nil {
+			return nil, err
+		}
 		countList = append(countList, count)
 	}
 
-	return countList
+	return countList, nil
 }

@@ -2,16 +2,23 @@ package router
 
 import (
 	"../db"
+	"../util"
 	"github.com/gin-gonic/gin"
 )
 
 func SearchCrop(ctx *gin.Context) {
 	name := ctx.Query("name")
-	info := db.FindCropInfo(name)
-	ctx.JSON(200, gin.H{"result": info})
+	info, err := db.FindCropInfo(name)
+	if err != nil {
+		ctx.JSON(400, gin.H{"result": err})
+	}
+	ctx.JSON(200, util.ResultJSON("Success", info))
 }
 
 func RankingCrop(ctx *gin.Context) {
-	count := db.GetCropCount()
-	ctx.JSON(200, gin.H{"result": count})
+	count, err := db.GetCropCount()
+	if err != nil {
+		ctx.JSON(400, gin.H{"result": err})
+	}
+	ctx.JSON(200, util.ResultJSON("Success", count))
 }

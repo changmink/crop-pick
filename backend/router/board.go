@@ -115,7 +115,7 @@ func AddComment(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(400, gin.H{"result": err.Error()})
 	}
-	ctx.JSON(200, gin.H{"result": id})
+	ctx.JSON(200, util.ResultJSON("Success", id))
 }
 
 func UpdateComment(ctx *gin.Context) {
