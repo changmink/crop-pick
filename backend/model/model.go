@@ -19,6 +19,7 @@ type Post struct {
 	Content   string `json:"content"`
 	Password  string `json:"password"`
 	Liked     int    `json:"liked"`
+	Image     string `json:"image"`
 	Comment   []Comment
 }
 

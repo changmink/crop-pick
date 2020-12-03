@@ -29,7 +29,7 @@ func GetPostList(name string, start int64, pageRange int64) ([]model.Post, error
 	db := getConnection()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, board_name , title, author, content, liked, password FROM post WHERE board_name=? ORDER BY id DESC LIMIT ? OFFSET ?", name, pageRange, start)
+	rows, err := db.Query("SELECT id, board_name , title, author, content, liked, image, password FROM post WHERE board_name=? ORDER BY id DESC LIMIT ? OFFSET ?", name, pageRange, start)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func GetPostList(name string, start int64, pageRange int64) ([]model.Post, error
 	var postList []model.Post
 	var post model.Post
 	for rows.Next() {
-		err := rows.Scan(&post.Id, &post.BoardName, &post.Title, &post.Author, &post.Content, &post.Liked, &post.Password)
+		err := rows.Scan(&post.Id, &post.BoardName, &post.Title, &post.Author, &post.Content, &post.Liked, &post.Image, &post.Password)
 		if err != nil {
 			return nil, err
 		}
@@ -52,8 +52,8 @@ func AddPost(post model.Post) (int64, error) {
 	db := getConnection()
 	defer db.Close()
 
-	result, err := db.Exec("INSERT INTO post(board_name, title, author, content, password) VALUES(?, ?, ?, ?, ?)",
-		post.BoardName, post.Title, post.Author, post.Content, post.Password)
+	result, err := db.Exec("INSERT INTO post(board_name, title, author, content, image, password) VALUES(?, ?, ?, ?, ?, ?)",
+		post.BoardName, post.Title, post.Author, post.Content, post.Image, post.Password)
 	if err != nil {
 		return -1, err
 	}
@@ -125,7 +125,7 @@ func GetPost(id string) (model.Post, error) {
 	db := getConnection()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, board_name, title, author, content, liked, password FROM post WHERE id=?", id)
+	rows, err := db.Query("SELECT id, board_name, title, author, content, liked, image, password FROM post WHERE id=?", id)
 	if err != nil {
 		return model.Post{}, err
 	}
@@ -133,7 +133,7 @@ func GetPost(id string) (model.Post, error) {
 
 	var post model.Post
 	if rows.Next() {
-		rows.Scan(&post.Id, &post.BoardName, &post.Title, &post.Author, &post.Content, &post.Liked, &post.Password)
+		rows.Scan(&post.Id, &post.BoardName, &post.Title, &post.Author, &post.Content, &post.Liked, &post.Image, &post.Password)
 		commentList, err := GetComments(id)
 		if err != nil {
 			return model.Post{}, err

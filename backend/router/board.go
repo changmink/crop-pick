@@ -3,9 +3,13 @@ package router
 import (
 	"strconv"
 
+	"../config"
 	"../db"
 	"../model"
 	"../util"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/gin-gonic/gin"
 )
 
@@ -132,4 +136,38 @@ func UpdateComment(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(200, util.ResultJSON("updated", ""))
+}
+
+func UploadImage(c *gin.Context) {
+	sess := c.MustGet("sess").(*session.Session)
+	uploader := s3manager.NewUploader(sess)
+
+	MyBucket := config.AWS.BucketName
+	MyRegion := config.AWS.Region
+
+	file, header, err := c.Request.FormFile("image")
+	if err != nil {
+		c.JSON(400, gin.H{
+			"result": err.Error(),
+		})
+		return
+	}
+	filename := header.Filename
+
+	_, err = uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(MyBucket),
+		ACL:    aws.String("public-read"),
+		Key:    aws.String(filename),
+		Body:   file,
+	})
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"result": err.Error(),
+		})
+		return
+	}
+	filepath := "https://" + MyBucket + "." + "s3-" + MyRegion + ".amazonaws.com/" + filename
+
+	c.JSON(200, util.ResultJSON("Success", filepath))
 }
