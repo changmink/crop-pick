@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,8 +45,9 @@ func main() {
 	engine.Use(func(c *gin.Context) {
 		c.Set("sess", sess)
 		c.Next()
-	})
+	}, cors.Default())
 
+	engine.Static("/static", "./static")
 	api := engine.Group("/api")
 	v1 := api.Group("/v1")
 	{
