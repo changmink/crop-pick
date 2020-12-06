@@ -3,8 +3,15 @@ package model
 import "time"
 
 type CropInfo struct {
-	Name      string    `json:"name"`
-	YearPrice [][13]int `json:"yearPrice"`
+	Name          string          `json:"name"`
+	YearPrice     [][13]int       `json:"yearPrice"`
+	ConsumerPrice []ConsumerPrice `json:"consumerPrice"`
+}
+type ConsumerPrice struct {
+	Crop  string  `json:"crop"`
+	Kind  string  `json:"kind"`
+	Price int64   `json:"price"`
+	Rate  float64 `json:"rate"`
 }
 
 type CropCount struct {

@@ -28,12 +28,27 @@ func FindCropInfo(crop string) (model.CropInfo, error) {
 		yearPriceList = append(yearPriceList, yearPrice)
 	}
 
+	var consumerPriceList []model.ConsumerPrice
+	var consumerPrice model.ConsumerPrice
+	rows1, err := db.Query("SELECT * FROM consumer_price WHERE crop=?", crop)
+	if err != nil {
+		return model.CropInfo{}, err
+	}
+	defer rows1.Close()
+	for rows1.Next() {
+		err := rows1.Scan(&consumerPrice.Crop, &consumerPrice.Kind, &consumerPrice.Price, &consumerPrice.Rate)
+		if err != nil {
+			return model.CropInfo{}, err
+		}
+		consumerPriceList = append(consumerPriceList, consumerPrice)
+	}
+
 	err = searchCount(crop)
 	if err != nil {
 		return model.CropInfo{}, err
 	}
 
-	return model.CropInfo{Name: crop, YearPrice: yearPriceList}, nil
+	return model.CropInfo{Name: crop, YearPrice: yearPriceList, ConsumerPrice: consumerPriceList}, nil
 }
 
 func searchCount(crop string) error {
