@@ -1,9 +1,8 @@
 package model
 
 type CropInfo struct {
-	Name  string `json:"name"`
-	Area  string `json:"area"`
-	Count string `json:"count"`
+	Name      string    `json:"name"`
+	YearPrice [][13]int `json:"yearPrice"`
 }
 
 type CropCount struct {

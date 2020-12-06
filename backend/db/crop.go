@@ -5,33 +5,35 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func FindCropInfo(crop string) ([]model.CropInfo, error) {
+func FindCropInfo(crop string) (model.CropInfo, error) {
 	db := getConnection()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT name, area, SUM(amount) from crop_amount_area GROUP BY area having name=?", crop)
+	rows, err := db.Query("SELECT * from year_price WHERE crop=?", crop)
 	if err != nil {
-		return nil, err
+		return model.CropInfo{}, err
+	}
+	defer rows.Close()
+
+	var yearPriceList [][13]int
+	var yearPrice [13]int
+	var name string
+	for rows.Next() {
+		err := rows.Scan(&yearPrice[0], &yearPrice[1], &yearPrice[2], &yearPrice[3],
+			&yearPrice[4], &yearPrice[5], &yearPrice[6], &yearPrice[7], &yearPrice[8],
+			&yearPrice[9], &yearPrice[10], &yearPrice[11], &yearPrice[12], &name)
+		if err != nil {
+			return model.CropInfo{}, err
+		}
+		yearPriceList = append(yearPriceList, yearPrice)
 	}
 
 	err = searchCount(crop)
 	if err != nil {
-		return nil, err
+		return model.CropInfo{}, err
 	}
 
-	defer rows.Close()
-
-	var info model.CropInfo
-	infoList := make([]model.CropInfo, 0)
-	for rows.Next() {
-		err := rows.Scan(&info.Name, &info.Area, &info.Count)
-		if err != nil {
-			return nil, err
-		}
-		infoList = append(infoList, info)
-	}
-
-	return infoList, nil
+	return model.CropInfo{Name: crop, YearPrice: yearPriceList}, nil
 }
 
 func searchCount(crop string) error {
