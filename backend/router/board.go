@@ -48,7 +48,7 @@ func GetBoard(ctx *gin.Context) {
 		totalPage += 1
 	}
 	boardPage := model.BoardPage{totalPage, list}
-	ctx.JSON(400, util.ResultJSON("Success", boardPage))
+	ctx.JSON(200, util.ResultJSON("Success", boardPage))
 
 }
 
