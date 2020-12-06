@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type CropInfo struct {
 	Name      string    `json:"name"`
 	YearPrice [][13]int `json:"yearPrice"`
@@ -11,15 +13,21 @@ type CropCount struct {
 }
 
 type Post struct {
-	Id        int64  `json:"id,omitempty"`
-	BoardName string `json:"boardName"`
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	Content   string `json:"content"`
-	Password  string `json:"password"`
-	Liked     int    `json:"liked"`
-	Image     string `json:"image"`
+	Id        int64     `json:"id,omitempty"`
+	BoardName string    `json:"boardName"`
+	Title     string    `json:"title"`
+	Author    string    `json:"author"`
+	Content   string    `json:"content"`
+	Password  string    `json:"password"`
+	Liked     int       `json:"liked"`
+	Image     string    `json:"image"`
+	Created   time.Time `json:"created"`
 	Comment   []Comment
+}
+type RawTime []uint8
+
+func (t RawTime) Time() (time.Time, error) {
+	return time.Parse("2006-01-02 15:04:05", string(t))
 }
 
 type Comment struct {

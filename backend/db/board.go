@@ -29,18 +29,24 @@ func GetPostList(name string, start int64, pageRange int64) ([]model.Post, error
 	db := getConnection()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, board_name , title, author, content, liked, image, password FROM post WHERE board_name=? ORDER BY id DESC LIMIT ? OFFSET ?", name, pageRange, start)
+	rows, err := db.Query("SELECT id, board_name , title, author, content, liked, image, password, created_time FROM post WHERE board_name=? ORDER BY id DESC LIMIT ? OFFSET ?", name, pageRange, start)
 	if err != nil {
 		return nil, err
 	}
 
 	var postList []model.Post
 	var post model.Post
+	var rawTime model.RawTime
 	for rows.Next() {
-		err := rows.Scan(&post.Id, &post.BoardName, &post.Title, &post.Author, &post.Content, &post.Liked, &post.Image, &post.Password)
+		err := rows.Scan(&post.Id, &post.BoardName, &post.Title, &post.Author, &post.Content, &post.Liked, &post.Image, &post.Password, &rawTime)
 		if err != nil {
 			return nil, err
 		}
+		datetime, err := rawTime.Time()
+		if err != nil {
+			return nil, err
+		}
+		post.Created = datetime
 		postList = append(postList, post)
 	}
 
