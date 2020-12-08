@@ -28,7 +28,7 @@ func GetBoardRank() ([]model.BoardRank, error) {
 	return boardRankList, nil
 }
 
-func GetBoardList() ([]string, error) {
+func GetBoardList() ([]model.Crop, error) {
 	db := getConnection()
 	defer db.Close()
 
@@ -38,14 +38,14 @@ func GetBoardList() ([]string, error) {
 	}
 	defer rows.Close()
 
-	var boardName string
-	var boardList []string
+	var board model.Crop
+	var boardList []model.Crop
 	for rows.Next() {
-		err := rows.Scan(&boardName)
+		err := rows.Scan(&board.Name)
 		if err != nil {
 			return nil, err
 		}
-		boardList = append(boardList, boardName)
+		boardList = append(boardList, board)
 	}
 
 	return boardList, nil
