@@ -64,6 +64,7 @@ func main() {
 		v1.POST("/images", router.UploadImage)
 
 		v1.GET("/boards", router.GetBoardList)
+		v1.GET("/boards/rank", router.GetBoardRank)
 	}
 
 	engine.Run(":8080")

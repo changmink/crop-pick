@@ -22,6 +22,15 @@ func GetBoardList(ctx *gin.Context) {
 	ctx.JSON(200, util.ResultJSON("Success", boardList))
 }
 
+func GetBoardRank(ctx *gin.Context) {
+	boardList, err := db.GetBoardRank()
+	if err != nil {
+		ctx.JSON(400, gin.H{"result": err.Error()})
+	}
+
+	ctx.JSON(200, util.ResultJSON("Success", boardList))
+}
+
 func GetBoard(ctx *gin.Context) {
 	pageString := ctx.Query("page")
 	pageRangeString := ctx.Query("range")

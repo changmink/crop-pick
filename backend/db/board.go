@@ -6,6 +6,28 @@ import (
 	"../model"
 )
 
+func GetBoardRank() ([]model.BoardRank, error) {
+	db := getConnection()
+	defer db.Close()
+
+	rows, err := db.Query("SELECT board_name,COUNT(*) as count FROM post GROUP BY board_name ORDER BY count DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var boardRank model.BoardRank
+	var boardRankList []model.BoardRank
+	for rows.Next() {
+		err := rows.Scan(&boardRank.BoardName, &boardRank.Score)
+		if err != nil {
+			return nil, err
+		}
+		boardRankList = append(boardRankList, boardRank)
+	}
+	return boardRankList, nil
+}
+
 func GetBoardList() ([]string, error) {
 	db := getConnection()
 	defer db.Close()
