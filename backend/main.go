@@ -48,6 +48,9 @@ func main() {
 	}, cors.Default())
 
 	engine.Static("/static", "./static")
+	engine.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(400, gin.H{"result": "ok"})
+	})
 	api := engine.Group("/api")
 	v1 := api.Group("/v1")
 	{
