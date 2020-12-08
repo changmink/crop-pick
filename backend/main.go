@@ -62,6 +62,8 @@ func main() {
 		v1.POST("/comment", router.AddComment)
 		v1.PUT("/comment", router.UpdateComment)
 		v1.POST("/images", router.UploadImage)
+
+		v1.GET("/boards", router.GetBoardList)
 	}
 
 	engine.Run(":8080")

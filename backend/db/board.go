@@ -6,6 +6,29 @@ import (
 	"../model"
 )
 
+func GetBoardList() ([]string, error) {
+	db := getConnection()
+	defer db.Close()
+
+	rows, err := db.Query("SELECT board_name FROM post GROUP BY board_name")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var boardName string
+	var boardList []string
+	for rows.Next() {
+		err := rows.Scan(&boardName)
+		if err != nil {
+			return nil, err
+		}
+		boardList = append(boardList, boardName)
+	}
+
+	return boardList, nil
+}
+
 func GetPostCount(name string) (int64, error) {
 	db := getConnection()
 	defer db.Close()
@@ -14,6 +37,7 @@ func GetPostCount(name string) (int64, error) {
 	if err != nil {
 		return -1, err
 	}
+	defer rows.Close()
 
 	var count int64
 	if rows.Next() {
@@ -159,6 +183,7 @@ func GetComments(postId string) ([]model.Comment, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var commentList []model.Comment
 	var comment model.Comment

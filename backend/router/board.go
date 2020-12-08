@@ -13,6 +13,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetBoardList(ctx *gin.Context) {
+	boardList, err := db.GetBoardList()
+	if err != nil {
+		ctx.JSON(400, gin.H{"result": err.Error()})
+	}
+
+	ctx.JSON(200, util.ResultJSON("Success", boardList))
+}
+
 func GetBoard(ctx *gin.Context) {
 	pageString := ctx.Query("page")
 	pageRangeString := ctx.Query("range")
@@ -20,7 +29,7 @@ func GetBoard(ctx *gin.Context) {
 
 	count, err := db.GetPostCount(name)
 	if err != nil {
-		ctx.JSON(500, gin.H{"result": err.Error()})
+		ctx.JSON(400, gin.H{"result": err.Error()})
 		return
 	}
 
