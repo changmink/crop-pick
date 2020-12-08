@@ -19,8 +19,9 @@ type CropCount struct {
 	Count string `json:"count"`
 }
 
-type Crop struct {
+type CropBoard struct {
 	Name string `json:"name"`
+	Post []Post `json:"post"`
 }
 
 type BoardRank struct {
