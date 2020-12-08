@@ -22,6 +22,7 @@ type CropCount struct {
 type BoardRank struct {
 	BoardName string `json:"boardName"`
 	Score     int64  `json:"score"`
+	Image     string `json:"image"`
 }
 type Post struct {
 	Id        int64     `json:"id,omitempty"`

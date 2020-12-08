@@ -10,7 +10,7 @@ func GetBoardRank() ([]model.BoardRank, error) {
 	db := getConnection()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT board_name,COUNT(*) as count FROM post GROUP BY board_name ORDER BY count DESC")
+	rows, err := db.Query("SELECT board_name , count, image FROM (SELECT board_name,COUNT(*) as count FROM post GROUP BY board_name) as board, crop_image WHERE board_name=name ORDER BY count DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +19,7 @@ func GetBoardRank() ([]model.BoardRank, error) {
 	var boardRank model.BoardRank
 	var boardRankList []model.BoardRank
 	for rows.Next() {
-		err := rows.Scan(&boardRank.BoardName, &boardRank.Score)
+		err := rows.Scan(&boardRank.BoardName, &boardRank.Score, &boardRank.Image)
 		if err != nil {
 			return nil, err
 		}
