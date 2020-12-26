@@ -1,0 +1,38 @@
+#title{
+    font-family: Gotham;
+    font-size: 20px; 
+    color: #3da11e;
+    font-weight: 900;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+}
+body{
+    margin: 20px 240px 80px 240px;
+    background-color:#fafef9
+}
+nav{
+    display: flex;
+    align-items: center;
+}
+.menu-title{
+    margin: 14px;
+    font-family: NotoSansKR;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #2c2c2c;
+}
+.menu{
+    margin-left: 135px;
+    display: flex;
+}
+#post, #number{
+    display: flex;
+   
+}
